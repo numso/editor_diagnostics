@@ -12,14 +12,6 @@ defmodule EditorDiagnostics do
     end
   end
 
-  @doc false
-  def collect() do
-    :ok = ensure_started()
-    diagnostics = Agent.get({:global, __MODULE__}, & &1)
-    Agent.stop({:global, __MODULE__})
-    diagnostics
-  end
-
   @doc """
   Reports an :error or :warning to be output to the editor.
 
@@ -34,5 +26,21 @@ defmodule EditorDiagnostics do
     diagnostic = {severity, message, file, line}
     :ok = ensure_started()
     Agent.update({:global, __MODULE__}, &[diagnostic | &1])
+  end
+
+  @doc """
+  Collects a list of the reported errors and shuts down the agent.
+
+  ## Examples
+
+      iex> EditorDiagnostics.collect()
+      [{:error, "something went wrong", "some/file.ex", 22}]
+
+  """
+  def collect() do
+    :ok = ensure_started()
+    diagnostics = Agent.get({:global, __MODULE__}, & &1)
+    Agent.stop({:global, __MODULE__})
+    diagnostics
   end
 end
