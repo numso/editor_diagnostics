@@ -1,5 +1,10 @@
 defmodule Mix.Tasks.Compile.EditorDiagnostics do
-  @moduledoc false
+  @moduledoc """
+  This is the EditorDiagnostics Compiler. It is responsible for collecting all
+  of the diagnostic messages emitted by the EditorDiagnostics agent and emitting
+  them as Elixir Compiler Diagnostics to be picked up and used in editor
+  plugins.
+  """
   use Mix.Task.Compiler
   alias Mix.Task.Compiler.Diagnostic
 

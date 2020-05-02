@@ -1,6 +1,9 @@
 defmodule EditorDiagnostics do
   @moduledoc """
-  Documentation for `EditorDiagnostics`.
+  This is the EditorDiagnostics Agent. It is the Agent to which you will report
+  all of your diagnostics. Once the compile step is complete, the
+  EditorDiagnostics Compiler will then collect all diagnostic messages from this
+  Agent and shut it down.
   """
   use Agent
   alias Mix.Task.Compiler.Diagnostic
