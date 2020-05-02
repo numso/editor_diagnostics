@@ -3,6 +3,7 @@ defmodule EditorDiagnostics do
   Documentation for `EditorDiagnostics`.
   """
   use Agent
+  alias Mix.Task.Compiler.Diagnostic
 
   defp ensure_started() do
     case Agent.start(fn -> [] end, name: {:global, __MODULE__}) do
@@ -26,8 +27,15 @@ defmodule EditorDiagnostics do
   """
   @spec report(Diagnostic.severity(), String.t(), Path.t(), Diagnostic.position(), String.t()) ::
           :ok
-  def report(severity, message, file, line, compiler_name \\ "editor_diagnostics") do
-    diagnostic = {severity, message, file, line, compiler_name}
+  def report(severity, message, file, position, compiler_name \\ "editor_diagnostics") do
+    diagnostic = %Diagnostic{
+      compiler_name: compiler_name,
+      file: file,
+      message: message,
+      position: position,
+      severity: severity
+    }
+
     :ok = ensure_started()
     Agent.update({:global, __MODULE__}, &[diagnostic | &1])
   end

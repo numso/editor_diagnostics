@@ -5,24 +5,17 @@ defmodule Mix.Tasks.Compile.EditorDiagnostics do
 
   @doc false
   def run(_args) do
-    errors = EditorDiagnostics.collect()
+    diagnostics = EditorDiagnostics.collect()
 
-    # TODO:: make warnings and errors configurable
-    case errors do
-      [] ->
-        :noop
+    has_errors =
+      Enum.any?(diagnostics, fn %Diagnostic{severity: severity} ->
+        severity in [:error, :warning]
+      end)
 
-      errors ->
-        {:error,
-         Enum.map(errors, fn {severity, message, file, position, compiler_name} ->
-           %Diagnostic{
-             compiler_name: compiler_name,
-             file: file,
-             message: message,
-             position: position,
-             severity: severity
-           }
-         end)}
+    cond do
+      Enum.empty?(diagnostics) -> :noop
+      has_errors -> {:error, diagnostics}
+      true -> {:ok, diagnostics}
     end
   end
 end
