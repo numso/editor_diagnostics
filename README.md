@@ -15,7 +15,7 @@ To install this package, first add `editor_diagnostics` to your list of dependen
 ```elixir
 def deps do
   [
-    {:editor_diagnostics, "~> 0.1.0"}
+    {:editor_diagnostics, "~> 0.2.0"}
   ]
 end
 ```
@@ -39,7 +39,7 @@ Add `editor_diagnostics` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:editor_diagnostics, "~> 0.1.0"}
+    {:editor_diagnostics, "~> 0.2.0"}
   ]
 end
 ```
