@@ -17,13 +17,17 @@ defmodule EditorDiagnostics do
 
   ## Examples
 
-      iex> EditorDiagnostics.report({:error, "something went wrong", "some/file.ex", 22})
+      iex> EditorDiagnostics.report(:error, "something went wrong", "some/file.ex", 22)
+      :ok
+
+      iex> EditorDiagnostics.report(:error, "something went wrong", "some/file.ex", 22, "my_project")
       :ok
 
   """
-  @spec report({Diagnostic.severity(), String.t(), Path.t(), Diagnostic.position()}) :: :ok
-  def report({severity, message, file, line}) do
-    diagnostic = {severity, message, file, line}
+  @spec report(Diagnostic.severity(), String.t(), Path.t(), Diagnostic.position(), String.t()) ::
+          :ok
+  def report(severity, message, file, line, compiler_name \\ "editor_diagnostics") do
+    diagnostic = {severity, message, file, line, compiler_name}
     :ok = ensure_started()
     Agent.update({:global, __MODULE__}, &[diagnostic | &1])
   end

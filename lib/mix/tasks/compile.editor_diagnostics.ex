@@ -14,12 +14,12 @@ defmodule Mix.Tasks.Compile.EditorDiagnostics do
 
       errors ->
         {:error,
-         Enum.map(errors, fn {severity, message, file, line} ->
+         Enum.map(errors, fn {severity, message, file, position, compiler_name} ->
            %Diagnostic{
-             compiler_name: "editor_diagnostics",
+             compiler_name: compiler_name,
              file: file,
              message: message,
-             position: line,
+             position: position,
              severity: severity
            }
          end)}
