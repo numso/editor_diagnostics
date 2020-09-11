@@ -1,53 +1,23 @@
-# EditorDiagnostics
+# DEPRECATED
 
-[Online Documentation](https://hexdocs.pm/editor_diagnostics).
+This package has been deprecated in favor of plain old `IO.warn/2`. You can call IO.warn with a custom stacktrace to have your warning emitted on a specific line:
 
-`EditorDiagnostics` gives your editor more fine-grained errors and warnings. It works with any editor which has a plugin based off of Elixir's compiler diagnostics feature (like [ElixirLS](https://github.com/elixir-lsp/elixir-ls)). It only works with libraries that explicitly opt-in to reporting errors this way.
-
-If you're an app/service author looking for this experience in your editor, check out the [Installation](#installation) section below to get started. If you're a library author and want to give your users a better error-reporting experience, check out the [For Library Authors](#for-library-authors) section.
-
-![example.png](https://i.imgur.com/dCBHURB.png)
-
-## Installation
-
-To install this package, first add `editor_diagnostics` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:editor_diagnostics, "~> 0.2.0"}
-  ]
-end
+```
+message = "Something, somewhere, went terribly wrong"
+name = "my_func_name"
+line = 8
+IO.warn(message, Macro.Env.stacktrace(%{__CALLER__ | function: {name, 0}, line: line}))
 ```
 
-Then add `:editor_diagnostics` at the end of your list of compilers in `mix.exs`:
+This library came about because I was confused when testing the various ways to emit errors/warnings from a macro. My editor would often decorate my entire file red when something went wrong. It turns out that the Elixir compiler adds an extra frame (titled "expanding macro") to stack traces that originate from inside macros. When the compiler built up diagnostic messages, it didn't take this extra frame into account and would emit a diagnostic with an incorrect file and line number. This bug has [since been fixed][elixir-pr] and the editor integration [got smarter about][elixirls-update] [handling errors][elixirls-pr] as well.
 
-```elixir
-def project do
-  [
-    compilers: Mix.compilers() ++ [:editor_diagnostics]
-  ]
-end
-```
+It would be nice to have an equivalent `IO.error/2` to emit multiple errors from your macro. There was a [lot of discussion][io-error] about this and in the end it turns out to be quite a tricky thing to implement. The best thing you can do right now is use `IO.warn` as many times as you need and then `reraise` at the end of your macro if you emitted any show-stopping warnings to ensure compilation does not continue.
 
-You're all set! You should now see line-specific error messages from macros that report errors using this library.
+## Hex
 
-## For Library Authors
+If you know how I can officially deprecate or unpublish this package on hex.pm then please file an issue and let me know! Likewise, feel free to file an issue if you want this package name for something you're working on and I'll gladly hand it over if that's possible on hex.
 
-Add `editor_diagnostics` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:editor_diagnostics, "~> 0.2.0"}
-  ]
-end
-```
-
-Then call `EditorDiagnostics.report/5` whenever you need to report a warning or error.
-
-It is important to note that without the [`:editor_diagnostics`](`Mix.Tasks.Compile.EditorDiagnostics`) compiler, users won't see any errors in their app. You should add a new section to your own library's documentation explaining to your users how to install this. You can either linke to the [Installation Instructions](#installation) above or embed those instructions into your own docs.
-
-## Used By
-
-- [Goblet](https://github.com/numso/goblet): A GraphQL Client to help you consume that sweet, sweet absinthe.
+[elixir-pr]: https://github.com/elixir-lang/elixir/pull/10040
+[elixirls-update]: https://elixirforum.com/t/introducing-elixirls-the-elixir-language-server/5857/97
+[elixirls-pr]: https://github.com/elixir-lsp/elixir-ls/pull/241
+[io-error]: https://groups.google.com/g/elixir-lang-core/c/AQ42q0zxheg

@@ -4,13 +4,13 @@ defmodule EditorDiagnostics.MixProject do
   def project do
     [
       app: :editor_diagnostics,
-      version: "0.2.0",
+      version: "0.3.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
       description: """
-      A library to help get useful errors/warnings from macros into your editor.
+      DEPRECATED
       """,
       homepage_url: "https://github.com/numso/editor_diagnostics",
       docs: docs()

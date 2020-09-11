@@ -1,61 +1,18 @@
 defmodule EditorDiagnostics do
-  @moduledoc """
-  This is the EditorDiagnostics Agent. It is the Agent to which you will report
-  all of your diagnostics. Once the compile step is complete, the
-  EditorDiagnostics Compiler will then collect all diagnostic messages from this
-  Agent and shut it down.
-  """
-  use Agent
-  alias Mix.Task.Compiler.Diagnostic
+  @moduledoc false
 
-  defp ensure_started() do
-    case Agent.start(fn -> [] end, name: {:global, __MODULE__}) do
-      {:ok, _} -> :ok
-      {:error, {:already_started, _}} -> :ok
-      response -> response
-    end
+  @doc false
+  def report(_, _, _, _, _) do
+    raise "This package has been deprecated. Please remove :editor_diagnostics from your list of compilers and your list of deps."
   end
 
-  @doc """
-  Reports an :error or :warning to be output to the editor.
-
-  ## Examples
-
-      iex> EditorDiagnostics.report(:error, "something went wrong", "some/file.ex", 22)
-      :ok
-
-      iex> EditorDiagnostics.report(:error, "something went wrong", "some/file.ex", 22, "my_project")
-      :ok
-
-  """
-  @spec report(Diagnostic.severity(), String.t(), Path.t(), Diagnostic.position(), String.t()) ::
-          :ok
-  def report(severity, message, file, position, compiler_name \\ "editor_diagnostics") do
-    diagnostic = %Diagnostic{
-      compiler_name: compiler_name,
-      file: file,
-      message: message,
-      position: position,
-      severity: severity
-    }
-
-    :ok = ensure_started()
-    Agent.update({:global, __MODULE__}, &[diagnostic | &1])
+  @doc false
+  def report(_, _, _, _) do
+    raise "This package has been deprecated. Please remove :editor_diagnostics from your list of compilers and your list of deps."
   end
 
-  @doc """
-  Collects a list of the reported errors and shuts down the agent.
-
-  ## Examples
-
-      iex> EditorDiagnostics.collect()
-      [{:error, "something went wrong", "some/file.ex", 22}]
-
-  """
+  @doc false
   def collect() do
-    :ok = ensure_started()
-    diagnostics = Agent.get({:global, __MODULE__}, & &1)
-    Agent.stop({:global, __MODULE__})
-    diagnostics
+    raise "This package has been deprecated. Please remove :editor_diagnostics from your list of compilers and your list of deps."
   end
 end
